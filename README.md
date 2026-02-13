@@ -1,7 +1,6 @@
 # 💎 Smart Tracker Pro
 
 A premium, responsive mobile web application designed for high-performance expense tracking. Built with a serverless architecture to ensure your financial data is always synced and secure.
-![Expenses Tracker](https://img.shields.io/badge/Smart-Study%20Planner-purple) ![Responsive](https://img.shields.io/badge/Responsive-Yes-green) ![AWS](https://img.shields.io/badge/Storage-Local%20Storage-blue)
 
 ---
 
