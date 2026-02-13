@@ -65,4 +65,4 @@ POST /prod/expense
 
 ```
 ### Live link:
-![App Link](https:d16w4xdpd2mb4d.cloudfront.net)
+![App Link](https://d16w4xdpd2mb4d.cloudfront.net)
