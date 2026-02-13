@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 p-6">
+    <div class="max-w-md mx-auto">
+        <h2 class="text-2xl font-black text-slate-800 uppercase tracking-tighter mb-8">⚙️ Settings</h2>
+        
+        <div class="bg-white p-6 rounded-[2.5rem] shadow-lg border border-slate-100 space-y-6">
+            <div>
+                <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Display Name</label>
+                <input type="text" id="new-name" class="w-full p-4 bg-slate-50 rounded-2xl font-bold mt-1 border-none focus:ring-2 focus:ring-indigo-400 outline-none">
+            </div>
+            <button onclick="updateName()" class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-black uppercase tracking-widest tap shadow-lg shadow-indigo-100">Update Profile</button>
+            <button onclick="clearAll()" class="w-full bg-red-50 text-red-600 p-4 rounded-2xl font-black uppercase tracking-widest tap">Reset Data</button>
+            <a href="index.html" class="block text-center text-slate-400 text-[10px] font-black uppercase tracking-widest pt-2">Go Back</a>
+        </div>
+    </div>
+    <script>
+        document.getElementById('new-name').value = localStorage.getItem('tracker_user_name') || '';
+        function updateName() {
+            localStorage.setItem('tracker_user_name', document.getElementById('new-name').value);
+            alert('Name Updated!');
+        }
+        function clearAll() {
+            if(confirm('Delete all data?')) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

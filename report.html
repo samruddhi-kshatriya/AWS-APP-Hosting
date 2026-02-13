@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:,">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Reports - Smart Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .purple-gradient { background: linear-gradient(180deg, #7c3aed 0%, #a78bfa 100%); }
+        .soft-shadow { box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.07); }
+        body { background-color: #f8faff; font-family: -apple-system, sans-serif; }
+        .tap:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="pb-40">
+
+    <div class="purple-gradient p-10 rounded-b-[4rem] text-white shadow-2xl text-center relative">
+        <a href="index.html" class="absolute left-8 top-10 text-2xl tap">←</a>
+        <p class="text-[10px] font-black opacity-70 uppercase tracking-[0.2em] mb-1">Monthly Analysis Total</p>
+        <h1 id="grand-total-display" class="text-5xl font-black tracking-tighter">₹0</h1>
+    </div>
+
+    <div class="max-w-md mx-auto px-6">
+        
+        <div class="bg-white rounded-[3rem] p-8 soft-shadow -mt-10 relative z-10 border border-gray-50 text-center">
+            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">Spending Distribution</p>
+            
+            <div class="relative h-64 flex justify-center items-center">
+                <canvas id="expenseChart"></canvas>
+                <div class="absolute flex flex-col items-center">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase">Spent</span>
+                    <span id="chart-center-total" class="text-xl font-black text-gray-800">₹0</span>
+                </div>
+            </div>
+
+            <div id="chart-legend" class="grid grid-cols-2 gap-4 mt-8 text-[10px] font-black text-gray-500 uppercase"></div>
+        </div>
+
+        <div class="mt-8 space-y-4">
+            <div class="bg-white p-6 rounded-[2.5rem] soft-shadow flex justify-between items-center border border-gray-50">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-xl">📊</div>
+                    <div>
+                        <p class="font-black text-gray-700 text-sm tracking-tight">Savings Rate</p>
+                        <p id="savings-percent" class="text-[10px] text-gray-400 font-bold uppercase">0% of income</p>
+                    </div>
+                </div>
+                <p id="savings-amt" class="font-black text-indigo-600 text-lg">₹0</p>
+            </div>
+        </div>
+
+        <div class="mt-12 mb-8 text-center">
+            <a href="index.html" class="text-[#94a3b8] font-black text-xs uppercase tracking-widest hover:text-indigo-600 transition tap">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-100 px-8 py-5 flex justify-between items-center max-w-md mx-auto z-50 rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.06)]">
+        <a href="index.html" class="flex flex-col items-center gap-1.5 text-gray-300"><span class="text-2xl">🏠</span><span class="text-[9px] font-black uppercase">Home</span></a>
+        <a href="categories.html" class="flex flex-col items-center gap-1.5 text-gray-300"><span class="text-2xl">📁</span><span class="text-[9px] font-black uppercase">Categories</span></a>
+        <a href="report.html" class="flex flex-col items-center gap-1.5 text-indigo-600 scale-110"><span class="text-2xl">📊</span><span class="text-[9px] font-black uppercase">Reports</span></a>
+        <a href="settings.html" class="flex flex-col items-center gap-1.5 text-gray-300"><span class="text-2xl">⚙️</span><span class="text-[9px] font-black uppercase">Settings</span></a>
+    </nav>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const expenses = JSON.parse(localStorage.getItem("expenses_db")) || [];
+            const incomes = JSON.parse(localStorage.getItem("income_db")) || [];
+            
+            const colors = { "Food": "#ff9f43", "Travel": "#54a0ff", "Shopping": "#ff80b0", "Bills": "#be80ff", "Entertainment": "#808cff", "Health": "#4ade80", "Others": "#94a3b8" };
+            const totals = { Food:0, Travel:0, Shopping:0, Bills:0, Entertainment:0, Health:0, Others:0 };
+            let totalExpense = 0;
+            let totalIncome = incomes.reduce((a, b) => a + Number(b.amount), 0);
+
+            expenses.forEach(exp => {
+                let cat = exp.category ? exp.category.charAt(0).toUpperCase() + exp.category.slice(1).toLowerCase() : "Others";
+                if(totals.hasOwnProperty(cat)) totals[cat] += Number(exp.amount);
+                else totals["Others"] += Number(exp.amount);
+                totalExpense += Number(exp.amount);
+            });
+
+            document.getElementById('grand-total-display').innerText = `₹${totalExpense.toLocaleString()}`;
+            document.getElementById('chart-center-total').innerText = `₹${totalExpense.toLocaleString()}`;
+            
+            const savings = totalIncome - totalExpense;
+            const savingsRate = totalIncome > 0 ? Math.round((savings / totalIncome) * 100) : 0;
+            document.getElementById('savings-percent').innerText = `${savingsRate}% of income saved`;
+            document.getElementById('savings-amt').innerText = `₹${savings.toLocaleString()}`;
+
+            const activeLabels = Object.keys(totals).filter(c => totals[c] > 0);
+            new Chart(document.getElementById('expenseChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: activeLabels,
+                    datasets: [{
+                        data: activeLabels.map(c => totals[c]),
+                        backgroundColor: activeLabels.map(c => colors[c]),
+                        borderWidth: 0
+                    }]
+                },
+                options: { cutout: '82%', plugins: { legend: { display: false } } }
+            });
+
+            document.getElementById('chart-legend').innerHTML = activeLabels.map(c => `
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full" style="background:${colors[c]}"></span>
+                    <span>${c}</span>
+                </div>
+            `).join('');
+        });
+    </script>
+</body>
+</html>

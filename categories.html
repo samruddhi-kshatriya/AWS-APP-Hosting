@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:,">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Categories - Smart Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Matches the light purple background in your screenshot */
+        .page-bg { background-color: #c7d2fe; } 
+        .category-card { transition: transform 0.1s; }
+        .category-card:active { transform: scale(0.95); }
+        .soft-shadow { box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="page-bg min-h-screen p-6 text-white font-sans">
+
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Categories</h1>
+
+        <div class="grid grid-cols-2 gap-4" id="category-grid">
+            
+            <div class="bg-[#fb923c] p-6 rounded-[2rem] soft-shadow category-card">
+                <p class="text-sm opacity-90 mb-1 font-semibold uppercase tracking-wider">Food</p>
+                <h2 class="text-2xl font-bold" id="cat-Food">₹ 0</h2>
+            </div>
+
+            <div class="bg-[#60a5fa] p-6 rounded-[2rem] soft-shadow category-card">
+                <p class="text-sm opacity-90 mb-1 font-semibold uppercase tracking-wider">Travel</p>
+                <h2 class="text-2xl font-bold" id="cat-Travel">₹ 0</h2>
+            </div>
+
+            <div class="bg-[#f472b6] p-6 rounded-[2rem] soft-shadow category-card">
+                <p class="text-sm opacity-90 mb-1 font-semibold uppercase tracking-wider">Shopping</p>
+                <h2 class="text-2xl font-bold" id="cat-Shopping">₹ 0</h2>
+            </div>
+
+            <div class="bg-[#c084fc] p-6 rounded-[2rem] soft-shadow category-card">
+                <p class="text-sm opacity-90 mb-1 font-semibold uppercase tracking-wider">Bills</p>
+                <h2 class="text-2xl font-bold" id="cat-Bills">₹ 0</h2>
+            </div>
+
+            <div class="bg-[#818cf8] p-6 rounded-[2rem] soft-shadow category-card">
+                <p class="text-sm opacity-90 mb-1 font-semibold uppercase tracking-wider">Entertainment</p>
+                <h2 class="text-2xl font-bold" id="cat-Entertainment">₹ 0</h2>
+            </div>
+
+            <div class="bg-[#4ade80] p-6 rounded-[2rem] soft-shadow category-card">
+                <p class="text-sm opacity-90 mb-1 font-semibold uppercase tracking-wider">Health</p>
+                <h2 class="text-2xl font-bold" id="cat-Health">₹ 0</h2>
+            </div>
+
+            <div class="bg-[#9ca3af] p-6 rounded-[2rem] soft-shadow category-card">
+                <p class="text-sm opacity-90 mb-1 font-semibold uppercase tracking-wider">Others</p>
+                <h2 class="text-2xl font-bold" id="cat-Others">₹ 0</h2>
+            </div>
+        </div>
+
+        <div class="mt-10 text-center">
+            <a href="index.html" class="text-gray-600 font-bold text-sm uppercase tracking-widest opacity-60 hover:opacity-100 transition">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. Fetch data from local storage
+        const expenses = JSON.parse(localStorage.getItem("expenses_db")) || [];
+        
+        // 2. Define the categories (Keys must start with Uppercase)
+        const categoryTotals = {
+            Food: 0,
+            Travel: 0,
+            Shopping: 0,
+            Bills: 0,
+            Entertainment: 0,
+            Health: 0,
+            Others: 0
+        };
+
+        // 3. Calculate total for each category
+        expenses.forEach(item => {
+            const amount = Number(item.amount);
+            let category = item.category || "Others";
+
+            // Normalize category: makes "bills" -> "Bills" so it matches the keys
+            category = category.trim();
+            const formattedCat = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+
+            if (categoryTotals.hasOwnProperty(formattedCat)) {
+                categoryTotals[formattedCat] += amount;
+            } else {
+                categoryTotals["Others"] += amount;
+            }
+        });
+
+        // 4. Update the HTML elements (cat-Food, cat-Bills, etc.)
+        Object.keys(categoryTotals).forEach(key => {
+            const displayElement = document.getElementById(`cat-${key}`);
+            if (displayElement) {
+                // Keep your font style: plain text injection
+                displayElement.innerText = `₹ ${categoryTotals[key]}`;
+            }
+        });
+    });
+</script>
+</body>
+</html>

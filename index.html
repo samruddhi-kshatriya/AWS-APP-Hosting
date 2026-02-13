@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Smart Expense Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+    .purple-gradient { 
+        background: linear-gradient(180deg, #7c3aed 0%, #a78bfa 100%); 
+    }
+    .glass-card { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); }
+    .soft-shadow { box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05); }
+    #signup-overlay {
+        z-index: 9999 !important;
+    }
+    nav {
+        transition: opacity 0.3s ease;
+    }
+    .nav-hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .tap:active { transform: scale(0.96); transition: 0.1s; }
+</style>
+</head>
+<body class="pb-32">
+
+    <div id="signup-overlay" class="fixed inset-0 bg-indigo-600/95 z-50 flex items-center justify-center hidden p-6">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-sm text-center">
+            <h2 class="text-2xl font-bold mb-2 text-gray-800">Welcome Back</h2>
+            <p class="text-gray-400 text-sm mb-6">Enter your name to personalize your dashboard.</p>
+            <input type="text" id="user-name-input" placeholder="Your Name" 
+                class="w-full bg-gray-50 p-4 rounded-2xl mb-4 text-center font-semibold outline-none focus:ring-2 focus:ring-indigo-400">
+            <button id="save-user-btn" class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-bold tap shadow-lg shadow-indigo-200">
+                Get Started
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-md mx-auto min-h-screen">
+        
+        <div class="purple-gradient p-6 pb-12 rounded-b-[3rem] text-white shadow-xl relative">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <p class="text-xs font-semibold opacity-70 uppercase tracking-widest">Welcome Back</p>
+                    <h1 id="display-name" class="text-2xl font-bold">User</h1>
+                </div>
+                <a href="settings.html" class="w-10 h-10 glass-card rounded-full flex items-center justify-center tap text-lg">⚙️</a>
+            </div>
+
+            <div class="glass-card p-6 rounded-[2.5rem]">
+                <p class="text-xs opacity-90 font-medium">Available Balance</p>
+                <h2 id="balance" class="text-4xl font-bold mt-1 tracking-tight">₹0</h2>
+                
+                <div class="flex justify-between mt-8 pt-4 border-t border-white/10">
+                    <div>
+                        <p class="text-[10px] opacity-70 uppercase font-bold">Income</p>
+                        <p id="incomeTotal" class="text-sm font-bold text-green-300">₹0</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] opacity-70 uppercase font-bold">Expenses</p>
+                        <p id="expenseTotal" class="text-sm font-bold text-red-200">₹0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 grid grid-cols-2 gap-5 -mt-8 relative z-10">
+            <a href="add-expenses.html" class="bg-gradient-to-br from-[#ff5f6d] to-[#ffc371] p-6 rounded-[2.5rem] shadow-[0_15px_30px_-5px_rgba(255,95,109,0.4)] flex flex-col items-center justify-center tap group border border-white/20">
+                <div class="w-14 h-14 bg-white/25 rounded-3xl flex items-center justify-center text-3xl mb-2 backdrop-blur-sm shadow-inner group-active:scale-90 transition-transform">💸</div>
+                <span class="text-[11px] font-black text-white uppercase tracking-widest">Add Expense</span>
+            </a>
+
+            <a href="add-income.html" class="bg-gradient-to-br from-[#11998e] to-[#38ef7d] p-6 rounded-[2.5rem] shadow-[0_15px_30px_-5px_rgba(17,153,142,0.4)] flex flex-col items-center justify-center tap group border border-white/20">
+                <div class="w-14 h-14 bg-white/25 rounded-3xl flex items-center justify-center text-3xl mb-2 backdrop-blur-sm shadow-inner group-active:scale-90 transition-transform">💰</div>
+                <span class="text-[11px] font-black text-white uppercase tracking-widest">Add Income</span>
+            </a>
+        </div>
+
+        <div class="px-6 mt-2">
+            <div class="flex justify-between items-center mb-4 px-2">
+                <h3 class="font-bold text-gray-800 text-lg">Recent Activity</h3>
+                <a href="histrory.html" class="text-xs font-bold text-indigo-500 uppercase tap">View all</a>
+            </div>
+            
+            <div id="recentList" class="space-y-3"></div>
+        </div>
+
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-100 px-6 py-3 flex justify-between items-center max-w-md mx-auto z-50">
+            <a href="index.html" class="flex flex-col items-center gap-1 text-indigo-600">
+                <span class="text-xl">🏠</span>
+                <span class="text-[10px] font-bold">Home</span>
+            </a>
+            <a href="categories.html" class="flex flex-col items-center gap-1 text-gray-400">
+                <span class="text-xl">📁</span>
+                <span class="text-[10px] font-bold">Categories</span>
+            </a>
+            <a href="report.html" class="flex flex-col items-center gap-1 text-gray-400">
+                <span class="text-xl">📊</span>
+                <span class="text-[10px] font-bold">Reports</span>
+            </a>
+            <a href="settings.html" class="flex flex-col items-center gap-1 text-gray-400">
+                <span class="text-xl">⚙️</span>
+                <span class="text-[10px] font-bold">Settings</span>
+            </a>
+        </nav>
+    </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const USER_KEY = "tracker_user_name";
+    const EXPENSE_KEY = "expenses_db";
+    const INCOME_KEY = "income_db";
+
+    const storedName = localStorage.getItem(USER_KEY);
+    const overlay = document.getElementById("signup-overlay");
+    const display = document.getElementById("display-name");
+
+    if (!storedName) {
+        overlay.classList.remove("hidden");
+    } else {
+        display.innerText = storedName;
+    }
+
+    document.getElementById("save-user-btn").onclick = () => {
+        const name = document.getElementById("user-name-input").value.trim();
+        if (name) {
+            localStorage.setItem(USER_KEY, name);
+            // Refresh to apply filters
+            window.location.reload();
+        }
+    };
+
+    /* ✅ UPDATED TO FILTER DATA BY CURRENT USER */
+    const allExpenses = JSON.parse(localStorage.getItem(EXPENSE_KEY)) || [];
+    const allIncomes  = JSON.parse(localStorage.getItem(INCOME_KEY)) || [];
+
+    const expenses = allExpenses.filter(item => item.userId === storedName);
+    const incomes = allIncomes.filter(item => item.userId === storedName);
+
+    const totalExp = expenses.reduce((a, b) => a + Number(b.amount), 0);
+    const totalInc = incomes.reduce((a, b) => a + Number(b.amount), 0);
+
+    document.getElementById("balance").innerText = `₹${totalInc - totalExp}`;
+    document.getElementById("incomeTotal").innerText = `₹${totalInc}`;
+    document.getElementById("expenseTotal").innerText = `₹${totalExp}`;
+
+    const recentList = document.getElementById("recentList");
+
+    const combined = [
+        ...expenses.map(e => ({ ...e, t: 'E' })),
+        ...incomes.map(i => ({ ...i, t: 'I' }))
+    ]
+    .sort((a, b) => Number(b.Id) - Number(a.Id)) // Sort by timestamp ID
+    .slice(0, 4);
+
+    if (combined.length === 0) {
+        recentList.innerHTML = `<p class="text-center text-gray-400 text-xs py-10">No recent activity</p>`;
+    } else {
+        recentList.innerHTML = combined.map(item => `
+            <div class="bg-white p-5 rounded-[2rem] soft-shadow flex justify-between items-center tap">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl ${item.t === 'I' ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'}">
+                        ${item.t === 'I' ? '💰' : '💸'}
+                    </div>
+                    <div>
+                        <p class="font-bold text-gray-700 text-sm">${item.note || item.category || (item.t === 'I' ? 'Income' : 'Expense')}</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">${item.date}</p>
+                    </div>
+                </div>
+                <p class="font-bold text-base ${item.t === 'I' ? 'text-green-500' : 'text-red-500'}">
+                    ${item.t === 'I' ? '+' : '-'}₹${item.amount}
+                </p>
+            </div>
+        `).join('');
+    }
+
+});
+</script>
+
+</body>
+</html>

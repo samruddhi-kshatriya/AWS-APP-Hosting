@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* This prevents the horizontal wobble */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        .purple-gradient { background: linear-gradient(180deg, #7c3aed 0%, #a78bfa 100%); }
+        .soft-shadow { box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05); }
+        .tap:active { transform: scale(0.96); transition: 0.1s; }
+    </style>
+</head>
+<body class="bg-[#f8faff] pb-32">
+
+    <div class="purple-gradient p-8 rounded-b-[3.5rem] text-white shadow-2xl relative mb-6">
+        <a href="index.html" class="absolute left-6 top-8 text-2xl tap">←</a>
+        <h2 class="text-2xl font-black tracking-tighter text-center uppercase">History</h2>
+        <p class="text-center text-[10px] font-bold opacity-70 uppercase tracking-[0.2em] mt-1">All Records</p>
+    </div>
+
+    <div class="max-w-md mx-auto px-5">
+        <div id="fullHistoryList" class="space-y-3">
+            </div>
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-100 px-6 py-3 flex justify-between items-center max-w-md mx-auto z-50">
+        <a href="index.html" class="flex flex-col items-center gap-1 text-indigo-600 tap">
+            <span class="text-xl">🏠</span>
+            <span class="text-[10px] font-black uppercase tracking-tighter">Home</span>
+        </a>
+        <a href="categories.html" class="flex flex-col items-center gap-1 text-gray-400 tap">
+            <span class="text-xl">📁</span>
+            <span class="text-[10px] font-black uppercase tracking-tighter">Categories</span>
+        </a>
+        <a href="report.html" class="flex flex-col items-center gap-1 text-gray-400 tap">
+            <span class="text-xl">📊</span>
+            <span class="text-[10px] font-black uppercase tracking-tighter">Report</span>
+        </a>
+        <a href="settings.html" class="flex flex-col items-center gap-1 text-gray-400 tap">
+            <span class="text-xl">⚙️</span>
+            <span class="text-[10px] font-black uppercase tracking-tighter">Settings</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const USER_KEY = "tracker_user_name";
+            const currentUser = localStorage.getItem(USER_KEY);
+            
+            const allExpenses = JSON.parse(localStorage.getItem("expenses_db")) || [];
+            const allIncomes = JSON.parse(localStorage.getItem("income_db")) || [];
+
+            // Filter by current logged in user
+            const userExpenses = allExpenses.filter(e => e.userId === currentUser);
+            const userIncomes = allIncomes.filter(i => i.userId === currentUser);
+
+            // Combine and sort (Newest First)
+            const all = [
+                ...userExpenses.map(e => ({ ...e, t: 'E' })),
+                ...userIncomes.map(i => ({ ...i, t: 'I' }))
+            ].sort((a, b) => Number(b.Id) - Number(a.Id));
+
+            const list = document.getElementById("fullHistoryList");
+
+            if (all.length === 0) {
+                list.innerHTML = '<p class="text-center text-gray-400 py-20 font-bold uppercase text-[10px]">No records found</p>';
+                return;
+            }
+
+            // Map function using the exact card structure from your UI
+            list.innerHTML = all.map(item => `
+                <div class="bg-white p-5 rounded-[2rem] soft-shadow flex justify-between items-center tap border border-gray-50/50">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl ${item.t === 'I' ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'}">
+                            ${item.t === 'I' ? '💰' : '💸'}
+                        </div>
+                        <div>
+                            <p class="font-black text-slate-700 text-sm leading-none truncate w-32 uppercase tracking-tighter">
+                                ${item.note || item.category || 'Record'}
+                            </p>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">${item.date}</p>
+                        </div>
+                    </div>
+                    <p class="font-black text-sm ${item.t === 'I' ? 'text-green-500' : 'text-red-600'}">
+                        ${item.t === 'I' ? '+' : '-'}₹${item.amount}
+                    </p>
+                </div>
+            `).join('');
+        });
+    </script>
+</body>
+</html>

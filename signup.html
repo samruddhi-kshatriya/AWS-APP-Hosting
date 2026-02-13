@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Welcome - Smart Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-700 min-h-screen flex items-center justify-center p-6">
+
+    <div class="w-full max-w-md bg-white rounded-[3rem] shadow-2xl p-10 text-center border border-white/20">
+        <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <span class="text-4xl">💎</span>
+        </div>
+
+        <h2 class="text-3xl font-black text-slate-800 tracking-tighter mb-2">Smart Tracker</h2>
+        <p class="text-slate-400 text-sm font-bold uppercase tracking-widest mb-8">Personal Finance Pro</p>
+
+        <div class="space-y-4">
+            <div class="text-left">
+                <label class="text-[10px] font-black text-slate-400 uppercase ml-4 mb-1 block">What should we call you?</label>
+                <input type="text" id="signup-name" placeholder="Enter your name" 
+                    class="w-full p-5 bg-slate-50 rounded-3xl outline-none focus:ring-4 focus:ring-indigo-100 font-bold text-slate-700 border-none">
+            </div>
+
+            <button onclick="handleSignup()" 
+                class="w-full bg-indigo-600 text-white p-5 rounded-3xl font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-200 tap">
+                Get Started
+            </button>
+        </div>
+
+        <p class="mt-8 text-[9px] text-slate-300 font-black uppercase tracking-widest">Safe • Secure • Cloud Synced</p>
+    </div>
+
+    <script>
+        function handleSignup() {
+            const name = document.getElementById('signup-name').value.trim();
+            if (name) {
+                // Matches KEY_USR in your app.js
+                localStorage.setItem('tracker_user_name', name);
+                window.location.href = 'index.html';
+            } else {
+                alert("Please enter a name to continue.");
+            }
+        }
+
+        // Auto-redirect if already signed up
+        window.onload = () => {
+            if (localStorage.getItem('tracker_user_name')) {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
